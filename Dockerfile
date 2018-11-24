@@ -1,8 +1,6 @@
 FROM alpine:3.8
 
-LABEL maintainer="lwl12 <docker@lwl12.com>"
-
-ENV NGINX_VERSION 1.15.5
+ENV NGINX_VERSION 1.15.6
 ENV OPENSSL_VERSION 1.1.1
 
 RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
@@ -49,6 +47,7 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
 		--with-mail_ssl_module \
 		--with-compat \
 		--with-file-aio \
+        # --with-http_spdy_module \
 		--with-http_v2_module \
 		--with-http_v2_hpack_enc \
 		--with-openssl=./openssl \
@@ -57,8 +56,7 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
 	" \
 	&& addgroup -S nginx \
 	&& adduser -D -S -h /var/cache/nginx -s /sbin/nologin -G nginx nginx \
-	&& apk update \
-    && apk add --no-cache --virtual .build-deps \
+	&& apk add --no-cache --virtual .build-deps \
 		gcc \
 		libc-dev \
 		make \
@@ -69,6 +67,7 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
 		curl \
 		gnupg1 \
 		libxslt-dev \
+
 		gd-dev \
 		geoip-dev \
 		git \
@@ -145,7 +144,7 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
 	&& ln -sf /dev/stderr /var/log/nginx/error.log \
 	&& nginx -V
 
-COPY *.conf /etc/nginx/
+COPY conf/* /etc/nginx/
 
 EXPOSE 80 443
 
