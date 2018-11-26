@@ -8,5 +8,8 @@ FSP Network Gen2 Server Infrastructure - Nginx
 
 
 ```bash
-docker run -d --restart always --name nginx -p 80:80 -p 443:443 --mount type=bind,source=/data,target=/data  fspnetwork/nginx
+docker run -d --restart=unless-stopped --name nginx -p 80:80 -p 443:443 \ 
+-v /opt/www:/data/www:rw \
+-v /opt/nginx/ssl:/etc/nginx/ssl:ro \
+-v /opt/nginx/log:/var/log/nginx:rw fspnetwork/nginx
 ```
