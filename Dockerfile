@@ -1,3 +1,4 @@
+FROM amelia/dhparam:latest as dhparam
 FROM alpine:3.8
 
 ENV NGINX_VERSION 1.15.6
@@ -144,6 +145,7 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
 	&& ln -sf /dev/stderr /var/log/nginx/error.log \
 	&& nginx -V
 
+COPY --from=dhparam /dhparam.pem /etc/nginx/ssl/dhparam.pem
 COPY conf/* /etc/nginx/
 
 EXPOSE 80 443
