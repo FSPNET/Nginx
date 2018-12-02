@@ -1,8 +1,8 @@
 FROM amelia/dhparam:latest as dhparam
 FROM alpine:3.8
 
-ENV NGINX_VERSION 1.15.6
-ENV OPENSSL_VERSION 1.1.1
+ARG NGINX_VERSION=1.15.7
+ARG OPENSSL_VERSION=1.1.1
 
 RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
 	&& CONFIG="\
@@ -48,7 +48,6 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
 		--with-mail_ssl_module \
 		--with-compat \
 		--with-file-aio \
-        # --with-http_spdy_module \
 		--with-http_v2_module \
 		--with-http_v2_hpack_enc \
 		--with-openssl=./openssl \
