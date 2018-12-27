@@ -1,7 +1,7 @@
 FROM amelia/dhparam:latest as dhparam
 FROM alpine:3.8
 
-ARG NGINX_VERSION=1.15.7
+ARG NGINX_VERSION=1.15.8
 ARG OPENSSL_VERSION=1.1.1
 
 RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
@@ -146,6 +146,7 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
 
 COPY --from=dhparam /dhparam.pem /etc/nginx/ssl/dhparam.pem
 COPY conf/* /etc/nginx/
+COPY ua/* /etc/nginx/ua/
 
 EXPOSE 80 443
 
