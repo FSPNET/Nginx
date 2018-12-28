@@ -1,7 +1,7 @@
 FROM amelia/dhparam:latest as dhparam
 FROM alpine:3.8
 
-ARG NGINX_VERSION=1.15.8
+ARG NGINX_VERSION=1.14.2
 ARG OPENSSL_VERSION=1.1.1
 
 RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
@@ -49,7 +49,6 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
 		--with-compat \
 		--with-file-aio \
 		--with-http_v2_module \
-		--with-http_v2_hpack_enc \
 		--with-openssl=./openssl \
 		--add-module=./ngx_brotli \
 		--add-module=./headers-more-nginx-module \
@@ -67,7 +66,6 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
 		curl \
 		gnupg1 \
 		libxslt-dev \
-
 		gd-dev \
 		geoip-dev \
 		git \
@@ -102,17 +100,13 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
 	&& cd /usr/src/nginx-$NGINX_VERSION \
 	&& git clone https://github.com/openresty/headers-more-nginx-module.git \
 	&& cd /usr/src/nginx-$NGINX_VERSION \
-	&& curl https://raw.githubusercontent.com/kn007/patch/master/nginx.patch | patch -p1 \
-	&& curl https://raw.githubusercontent.com/kn007/patch/master/nginx_strict-sni.patch	| patch -p1 \
-	&& ./configure $CONFIG \
+	&& ./configure $CONFIG --with-debug \
 	&& make -j$(getconf _NPROCESSORS_ONLN) \
     && mv objs/nginx objs/nginx-debug \
 	&& mv objs/ngx_http_xslt_filter_module.so objs/ngx_http_xslt_filter_module-debug.so \
 	&& mv objs/ngx_http_image_filter_module.so objs/ngx_http_image_filter_module-debug.so \
 	&& mv objs/ngx_http_geoip_module.so objs/ngx_http_geoip_module-debug.so \
 	&& mv objs/ngx_stream_geoip_module.so objs/ngx_stream_geoip_module-debug.so \
-	&& ./configure $CONFIG \
-	&& make -j$(getconf _NPROCESSORS_ONLN) \
 	&& make install \
 	&& rm -rf /etc/nginx/html/ \
 	&& mkdir /etc/nginx/conf.d/ \
@@ -129,7 +123,7 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
 	&& strip /usr/lib/nginx/modules/*.so \
     && rm -rf /usr/src/nginx-$NGINX_VERSION \
 	\
-	# xBring in gettext so we can get `envsubst`, then throw
+	# Bring in gettext so we can get `envsubst`, then throw
 	# the rest away. To do this, we need to install `gettext`
 	# then move `envsubst` out of the way so `gettext` can
 	# be deleted completely, then move `envsubst` back.
