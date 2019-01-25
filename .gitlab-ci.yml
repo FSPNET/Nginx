@@ -1,0 +1,27 @@
+image: docker:stable
+
+services:
+    - docker:dind
+
+variables:
+    DOCKER_DRIVER: overlay2
+    STABLE_VERSION: "1.14.2"
+    MAINLINE_VERSION: "1.15.8"
+
+before_script:
+    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+
+build_stable:
+    stage: build
+    script:
+        - docker build -t $CI_REGISTRY_IMAGE:stable -t $CI_REGISTRY_IMAGE:$STABLE_VERSION -f Dockerfile.stable .
+        - docker push $CI_REGISTRY_IMAGE:stable 
+        - docker push $CI_REGISTRY_IMAGE:$STABLE_VERSION
+
+build_mainline:
+    stage: build
+    script: 
+        - docker build -t $CI_REGISTRY_IMAGE:mainline -t $CI_REGISTRY_IMAGE:$MAINLINE_VERSION -t $CI_REGISTRY_IMAGE -f Dockerfile.mainline .
+        - docker push $CI_REGISTRY_IMAGE:mainline 
+        - docker push $CI_REGISTRY_IMAGE:$MAINLINE_VERSION
+        - docker push $CI_REGISTRY_IMAGE
