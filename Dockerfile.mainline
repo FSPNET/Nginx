@@ -1,8 +1,8 @@
 FROM amelia/dhparam:latest as dhparam
 FROM alpine:3.8
 
-ARG NGINX_VERSION=1.14.2
-ARG OPENSSL_VERSION=1.1.1
+ARG NGINX_VERSION=1.15.8
+ARG OPENSSL_VERSION=1.1.1a
 
 RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
 	&& CONFIG="\
@@ -49,7 +49,10 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
 		--with-compat \
 		--with-file-aio \
 		--with-http_v2_module \
+		--with-http_v2_hpack_enc \
+		--with-zlib=./zlib-cf \
 		--with-openssl=./openssl \
+		--with-openssl-opt='zlib' \
 		--add-module=./ngx_brotli \
 		--add-module=./headers-more-nginx-module \
 	" \
@@ -92,6 +95,10 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
 	&& git clone https://github.com/eustas/ngx_brotli.git \
 	&& cd ngx_brotli \
 	&& git submodule update --init --recursive \
+    && cd /usr/src/nginx-$NGINX_VERSION \
+	&& git clone https://github.com/cloudflare/zlib.git zlib-cf \
+	&& cd zlib-cf \
+    && make -f Makefile.in distclean \
 	&& cd /usr/src/nginx-$NGINX_VERSION \
 	&& curl https://www.openssl.org/source/openssl-$OPENSSL_VERSION.tar.gz -o openssl.gz \
 	&& tar -xzf openssl.gz \
@@ -100,7 +107,10 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
 	&& cd /usr/src/nginx-$NGINX_VERSION \
 	&& git clone https://github.com/openresty/headers-more-nginx-module.git \
 	&& cd /usr/src/nginx-$NGINX_VERSION \
-	&& ./configure $CONFIG --with-debug \
+    && curl https://raw.githubusercontent.com/kn007/patch/master/nginx.patch | patch -p1 \
+	&& curl https://raw.githubusercontent.com/kn007/patch/master/nginx_strict-sni.patch	| patch -p1 \
+	&& curl https://gist.github.com/CarterLi/f6e21d4749984a255edc7b358b44bf58/raw/4a7ad66a9a29ffade34d824549ed663bc4b5ac98/use_openssl_md5_sha1.diff | patch -p1 \
+	&& ./configure $CONFIG\
 	&& make -j$(getconf _NPROCESSORS_ONLN) \
     && mv objs/nginx objs/nginx-debug \
 	&& mv objs/ngx_http_xslt_filter_module.so objs/ngx_http_xslt_filter_module-debug.so \
