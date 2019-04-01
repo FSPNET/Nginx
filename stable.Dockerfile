@@ -1,5 +1,5 @@
 FROM amelia/dhparam:latest as dhparam
-FROM alpine:3.8
+FROM alpine
 
 ARG NGINX_VERSION=1.14.2
 ARG OPENSSL_VERSION=1.1.1b
