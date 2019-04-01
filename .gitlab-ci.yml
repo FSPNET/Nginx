@@ -14,14 +14,14 @@ before_script:
 build_stable:
     stage: build
     script:
-        - docker build -t $CI_REGISTRY_IMAGE:stable -t $CI_REGISTRY_IMAGE:$STABLE_VERSION -f Dockerfile.stable .
+        - docker build -t $CI_REGISTRY_IMAGE:stable -t $CI_REGISTRY_IMAGE:$STABLE_VERSION -f stable.Dockerfile .
         - docker push $CI_REGISTRY_IMAGE:stable 
         - docker push $CI_REGISTRY_IMAGE:$STABLE_VERSION
 
 build_mainline:
     stage: build
     script: 
-        - docker build -t $CI_REGISTRY_IMAGE:mainline -t $CI_REGISTRY_IMAGE:$MAINLINE_VERSION -t $CI_REGISTRY_IMAGE -f Dockerfile.mainline .
+        - docker build -t $CI_REGISTRY_IMAGE:mainline -t $CI_REGISTRY_IMAGE:$MAINLINE_VERSION -t $CI_REGISTRY_IMAGE -f mainline.Dockerfile .
         - docker push $CI_REGISTRY_IMAGE:mainline 
         - docker push $CI_REGISTRY_IMAGE:$MAINLINE_VERSION
         - docker push $CI_REGISTRY_IMAGE
