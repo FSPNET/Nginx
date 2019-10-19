@@ -1,5 +1,5 @@
 FROM amelia/dhparam:latest as dhparam
-FROM alpine:edge as builder
+FROM alpine:3.10 as builder
 
 ARG NGINX_VERSION=1.17.4
 ARG OPENSSL_VERSION=1.1.1d
