@@ -5,19 +5,41 @@ FSP Network Gen2 Server Infrastructure - Nginx
 [![MicroBadger Size](https://img.shields.io/microbadger/image-size/fspnetwork/nginx.svg?style=flat-square)](https://microbadger.com/#/images/fspnetwork/nginx)
 [![LICENSE](https://img.shields.io/badge/license-Anti%20996-blue.svg?style=flat-square)](https://github.com/996icu/996.ICU/blob/master/LICENSE)
 [![996.icu](https://img.shields.io/badge/link-996.icu-red.svg?style=flat-square)](https://996.icu)
-![Nginx Version](https://img.shields.io/badge/Nginx-1.17.4-blue.svg?style=flat-square)
+
+## Supported tags
+
+- [`edge` (Dockerfile)](https://github.com/FSPNET/Nginx/blob/master/Dockerfile)
+- [`latest`, `1`, `1.17`, `1.17.4` (Dockerfile)](https://github.com/FSPNET/Nginx/tree/1.17.4/Dockerfile)
+
+## Supported Package Registry
+
+- [Docker.io](https://hub.docker.com/r/fspnetwork/nginx/)
 
 ## Usage
 
-```bash
-docker run -d --restart=unless-stopped --name nginx -p 80:80 -p 443:443 \ 
--v /opt/www:/data/www:rw \
--v /opt/nginx/ssl:/etc/nginx/ssl:ro \
--v /opt/nginx/log:/var/log/nginx:rw fspnetwork/nginx
+```sh
+docker pull fspnetwork/nginx
 ```
+
+## Directory settings
+
+- `/data/conf/`
+- `/etc/nginx/ssl`
+- `/var/log/nginx`
+
+You need to make sure your website config file like `/data/conf/mywebsite/nginx.conf`
+
+## LICENSE
+
+The code in this repository, unless otherwise noted, is [Anti-996](LICENSE) licensed. See the LICENSE file in this repository.
 
 ## more
 
 - [ngx_brotli](https://github.com/eustas/ngx_brotli)
 - [zlib by cloudflare](https://github.com/cloudflare/zlib)
+- [openssl-patch](https://github.com/hakasenyang/openssl-patch)
+- [nginx-sticky-module-ng](https://bitbucket.org/nginx-goodies/nginx-sticky-module-ng)
+- [nginx-ct](https://github.com/grahamedgecombe/nginx-ct)
 - [headers-more-nginx-module](https://github.com/openresty/headers-more-nginx-module)
+- [ngx_devel_kit](https://github.com/simplresty/ngx_devel_kit)
+- [lua-nginx-module](https://github.com/openresty/lua-nginx-module)
