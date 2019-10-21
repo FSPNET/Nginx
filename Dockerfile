@@ -107,6 +107,9 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
     # Nginx Devel Kit
     && git clone https://github.com/simpl/ngx_devel_kit.git --depth 1 \
     \
+    # Lua
+    && git clone https://github.com/openresty/lua-nginx-module.git --depth 1 \
+    \
     && CONFIG="$CONFIG \
         --with-zlib=/usr/src/nginx-${NGINX_VERSION}/zlib \
         --add-module=/usr/src/nginx-${NGINX_VERSION}/ngx_brotli \
