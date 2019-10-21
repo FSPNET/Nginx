@@ -100,8 +100,12 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
     \
 	# nginx certificate transparency
     && git clone https://github.com/grahamedgecombe/nginx-ct.git --depth 1 \
+    \
     # headers-more-nginx
     && git clone https://github.com/openresty/headers-more-nginx-module.git --depth 1 \
+    \
+    # Nginx Devel Kit
+    && git clone https://github.com/simpl/ngx_devel_kit.git --depth 1 \
     \
     && CONFIG="$CONFIG \
         --with-zlib=/usr/src/nginx-${NGINX_VERSION}/zlib \
