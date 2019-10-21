@@ -21,3 +21,15 @@ jobs:
         password: ${{ secrets.DOCKER_TOKEN }}
         repository: fspnetwork/nginx
         tags: latest
+    - uses: jerray/publish-docker-action@master
+      with:
+        username: ${{ secrets.GITHUB_USERNAME }}
+        password: ${{ secrets.GITHUB_PR_TOKEN }}
+        repository: docker.pkg.github.com/FSPNET/nginx
+        auto_tag: true
+    - uses: jerray/publish-docker-action@master
+      with:
+        username: ${{ secrets.GITHUB_USERNAME }}
+        password: ${{ secrets.GITHUB_PR_TOKEN }}
+        repository: docker.pkg.github.com/FSPNET/nginx
+        tags: latest
