@@ -15,6 +15,7 @@ FSP Network Gen2 Server Infrastructure - Nginx
 ## Supported Package Registry
 
 - [Docker.io](https://hub.docker.com/r/fspnetwork/nginx/)
+- [GitHub Package Registry](https://github.com/FSPNET/Nginx/packages/41838/versions)
 
 ## Usage
 
