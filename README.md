@@ -9,7 +9,8 @@ FSP Network Gen2 Server Infrastructure - Nginx
 ## Supported tags
 
 - [`edge` (Dockerfile)](https://github.com/FSPNET/Nginx/blob/master/Dockerfile)
-- [`latest`, `1`, `1.17`, `1.17.4` (Dockerfile)](https://github.com/FSPNET/Nginx/tree/1.17.4/Dockerfile)
+- [`latest`, `1`, `1.17`, `1.17.5` (Dockerfile)](https://github.com/FSPNET/Nginx/tree/1.17.5/Dockerfile)
+- [`1.17.4` (Dockerfile)](https://github.com/FSPNET/Nginx/tree/1.17.4/Dockerfile)
 
 ## Supported Package Registry
 
