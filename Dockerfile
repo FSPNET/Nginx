@@ -4,8 +4,75 @@ FROM alpine:3.10 as builder
 ARG NGINX_VERSION=1.17.5
 ARG OPENSSL_VERSION=1.1.1d
 
-RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
-    && CONFIG="\
+RUN set -ex \
+    && echo 'http://mirrors.aliyun.com/alpine/edge/main'>> /etc/apk/repositories \
+    && echo 'http://mirrors.aliyun.com/alpine/edge/community' >> /etc/apk/repositories \
+    && apk upgrade \
+    && apk add --no-cache \
+        gcc \
+        libc-dev \
+        make \
+        openssl-dev \
+        pcre-dev \
+        zlib-dev \
+        linux-headers \
+        curl \
+        gnupg \
+        libxslt-dev \
+        gd-dev \
+        geoip-dev \
+        git \
+        gettext \
+    && curl -fSL https://nginx.org/download/nginx-$NGINX_VERSION.tar.gz -o nginx.tar.gz \
+    && curl -fSL https://nginx.org/download/nginx-$NGINX_VERSION.tar.gz.asc -o nginx.tar.gz.asc \
+    && export GNUPGHOME="$(mktemp -d)"; \
+        for key in \
+            B0F4253373F8F6F510D42178520A9993A1C052F8 \
+        ; do \
+            gpg --batch --keyserver ha.pool.sks-keyservers.net --recv-keys "$key"; \
+        done \
+    && gpg --batch --verify nginx.tar.gz.asc nginx.tar.gz \
+    && mkdir -p /usr/src \
+    && tar -zxC /usr/src -f nginx.tar.gz \
+    && rm nginx.tar.gz
+
+RUN set -ex \
+    && cd /usr/src/nginx-$NGINX_VERSION \
+    && curl https://raw.githubusercontent.com/kn007/patch/master/nginx.patch | patch -p1 \
+    && curl https://raw.githubusercontent.com/hakasenyang/openssl-patch/master/nginx_strict-sni_1.15.10.patch | patch -p1 \ 
+    \
+    # Brotli
+    && git clone https://github.com/google/ngx_brotli.git --depth=1 \
+    && (cd ngx_brotli; git submodule update --init) \
+    \
+    # cf-zlib
+    && git clone https://github.com/cloudflare/zlib.git --depth 1 \
+    && (cd zlib; make -f Makefile.in distclean) \
+    \
+    # OpenSSL
+    && curl -fSL https://www.openssl.org/source/openssl-${OPENSSL_VERSION}.tar.gz -o openssl-${OPENSSL_VERSION}.tar.gz \
+    && tar -xzf openssl-${OPENSSL_VERSION}.tar.gz \
+    && (cd openssl-${OPENSSL_VERSION}; curl https://raw.githubusercontent.com/hakasenyang/openssl-patch/master/openssl-equal-${OPENSSL_VERSION}_ciphers.patch | patch -p1) \ 
+    \
+    # Sticky
+    && mkdir nginx-sticky-module-ng \
+    && curl -fSL https://bitbucket.org/nginx-goodies/nginx-sticky-module-ng/get/master.tar.gz -o nginx-sticky-module-ng.tar.gz \
+    && tar -zxC nginx-sticky-module-ng -f nginx-sticky-module-ng.tar.gz --strip 1 \
+    \
+	# nginx certificate transparency
+    && git clone https://github.com/grahamedgecombe/nginx-ct.git --depth 1 \
+    \
+    # headers-more-nginx
+    && git clone https://github.com/openresty/headers-more-nginx-module.git --depth 1 \
+    \
+    # Nginx Devel Kit
+    && git clone https://github.com/simpl/ngx_devel_kit.git --depth 1 \
+    \
+    # Lua
+    && git clone https://github.com/openresty/lua-nginx-module.git --depth 1
+
+RUN cd /usr/src/nginx-$NGINX_VERSION \
+    && ./configure \
         --prefix=/etc/nginx \
         --sbin-path=/usr/sbin/nginx \
         --modules-path=/usr/lib/nginx/modules \
@@ -49,78 +116,13 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
         --with-compat \
         --with-file-aio \
         --with-http_v2_module \
-    " \
-    && addgroup -S nginx \
-    && adduser -D -S -h /var/cache/nginx -s /sbin/nologin -G nginx nginx \
-    && apk upgrade \
-    && apk add --no-cache \
-        gcc \
-        libc-dev \
-        make \
-        openssl-dev \
-        pcre-dev \
-        zlib-dev \
-        linux-headers \
-        curl \
-        gnupg \
-        libxslt-dev \
-        gd-dev \
-        geoip-dev \
-        git \
-        gettext \
-    && curl -fSL https://nginx.org/download/nginx-$NGINX_VERSION.tar.gz -o nginx.tar.gz \
-    && curl -fSL https://nginx.org/download/nginx-$NGINX_VERSION.tar.gz.asc -o nginx.tar.gz.asc \
-    && export GNUPGHOME="$(mktemp -d)"; \
-        for key in $GPG_KEYS; do \
-            gpg --batch --keyserver ha.pool.sks-keyservers.net --recv-keys "$key"; \
-        done \
-    && gpg --batch --verify nginx.tar.gz.asc nginx.tar.gz \
-    && mkdir -p /usr/src \
-    && tar -zxC /usr/src -f nginx.tar.gz \
-    && rm nginx.tar.gz \
-    && cd /usr/src/nginx-$NGINX_VERSION \
-    && curl https://raw.githubusercontent.com/kn007/patch/master/nginx.patch | patch -p1 \
-    && curl https://raw.githubusercontent.com/hakasenyang/openssl-patch/master/nginx_strict-sni_1.15.10.patch | patch -p1 \ 
-    \
-    # Brotli
-    && git clone https://github.com/google/ngx_brotli.git --depth=1 \
-    && (cd ngx_brotli; git submodule update --init) \
-    \
-    # cf-zlib
-    && git clone https://github.com/cloudflare/zlib.git --depth 1 \
-    && (cd zlib; make -f Makefile.in distclean) \
-    \
-    # OpenSSL
-    && curl -fSL https://www.openssl.org/source/openssl-${OPENSSL_VERSION}.tar.gz -o openssl-${OPENSSL_VERSION}.tar.gz \
-    && tar -xzf openssl-${OPENSSL_VERSION}.tar.gz \
-    && (cd openssl-${OPENSSL_VERSION}; curl https://raw.githubusercontent.com/hakasenyang/openssl-patch/master/openssl-equal-${OPENSSL_VERSION}_ciphers.patch | patch -p1) \ 
-    \
-    # Sticky
-    && mkdir nginx-sticky-module-ng \
-    && curl -fSL https://bitbucket.org/nginx-goodies/nginx-sticky-module-ng/get/master.tar.gz -o nginx-sticky-module-ng.tar.gz \
-    && tar -zxC nginx-sticky-module-ng -f nginx-sticky-module-ng.tar.gz --strip 1 \
-    \
-	# nginx certificate transparency
-    && git clone https://github.com/grahamedgecombe/nginx-ct.git --depth 1 \
-    \
-    # headers-more-nginx
-    && git clone https://github.com/openresty/headers-more-nginx-module.git --depth 1 \
-    \
-    # Nginx Devel Kit
-    && git clone https://github.com/simpl/ngx_devel_kit.git --depth 1 \
-    \
-    # Lua
-    && git clone https://github.com/openresty/lua-nginx-module.git --depth 1 \
-    \
-    && CONFIG="$CONFIG \
+        --with-http_v2_hpack_enc \
         --with-zlib=/usr/src/nginx-${NGINX_VERSION}/zlib \
         --add-module=/usr/src/nginx-${NGINX_VERSION}/ngx_brotli \
         --add-dynamic-module=/usr/src/nginx-${NGINX_VERSION}/nginx-sticky-module-ng \
         --add-dynamic-module=/usr/src/nginx-$NGINX_VERSION/nginx-ct \
         --add-module=/usr/src/nginx-${NGINX_VERSION}/headers-more-nginx-module \
         --with-openssl=/usr/src/nginx-${NGINX_VERSION}/openssl-${OPENSSL_VERSION} \
-    " \
-    && ./configure $CONFIG \
     && make -j$(getconf _NPROCESSORS_ONLN) \
     && make install \
     && rm -rf /etc/nginx/html/ \
@@ -147,6 +149,7 @@ COPY --from=builder /usr/sbin/nginx /usr/sbin/nginx
 COPY --from=builder /usr/bin/envsubst /usr/local/bin/envsubst
 COPY --from=builder /usr/lib/nginx/ /usr/lib/nginx/
 COPY --from=builder /usr/share/nginx /usr/share/nginx
+COPY docker-entrypoint.sh /usr/local/bin/
 
 RUN apk add --no-cache \
         musl \
@@ -167,7 +170,10 @@ RUN apk add --no-cache \
     && mv /etc/nginx/logrotate /etc/logrotate.d/nginx \
     && mv /etc/nginx/domain.logrotate /etc/logrotate.d/domain \
     && chmod 755 /etc/logrotate.d/nginx \
-    && chmod 755 /etc/logrotate.d/domain
+    && chmod 755 /etc/logrotate.d/domain \
+    && chmod +x /usr/local/bin/docker-entrypoint.sh
+
+ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
 
 EXPOSE 80 443
 STOPSIGNAL SIGTERM
