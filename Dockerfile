@@ -140,6 +140,8 @@ COPY ua/* /etc/nginx/ua/
 
 FROM alpine:3.10
 
+ENV TZ=UTC
+
 COPY --from=builder /etc/nginx /etc/nginx
 COPY --from=builder /usr/sbin/nginx /usr/sbin/nginx
 COPY --from=builder /usr/bin/envsubst /usr/local/bin/envsubst
