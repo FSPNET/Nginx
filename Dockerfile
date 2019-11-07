@@ -163,7 +163,9 @@ RUN apk add --no-cache \
     && ln -sf /dev/stdout /var/log/nginx/access.log \
     && ln -sf /dev/stderr /var/log/nginx/error.log \
     && mv /etc/nginx/logrotate /etc/logrotate.d/nginx \
-    && chmod 755 /etc/logrotate.d/nginx
+    && mv /etc/nginx/domain.logrotate /etc/logrotate.d/domain \
+    && chmod 755 /etc/logrotate.d/nginx \
+    && chmod 755 /etc/logrotate.d/domain
 
 EXPOSE 80 443
 STOPSIGNAL SIGTERM
