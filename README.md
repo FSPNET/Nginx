@@ -25,11 +25,10 @@ docker pull fspnetwork/nginx
 
 ## Directory settings
 
+- `/etc/nginx/conf.d`
+- `/etc/nginx/sites-enabled`
 - `/data/conf/`
-- `/etc/nginx/ssl`
 - `/var/log/nginx`
-
-You need to make sure your website config file like `/data/conf/mywebsite/nginx.conf`
 
 ## LICENSE
 
@@ -43,5 +42,5 @@ The code in this repository, unless otherwise noted, is [Anti-996](LICENSE) lice
 - [nginx-sticky-module-ng](https://bitbucket.org/nginx-goodies/nginx-sticky-module-ng)
 - [nginx-ct](https://github.com/grahamedgecombe/nginx-ct)
 - [headers-more-nginx-module](https://github.com/openresty/headers-more-nginx-module)
-- [ngx_devel_kit](https://github.com/simplresty/ngx_devel_kit)
-- [lua-nginx-module](https://github.com/openresty/lua-nginx-module)
+- [quiche by cloudflare](https://github.com/cloudflare/quiche)
+- [patch by kn007](https://github.com/kn007/patch)
