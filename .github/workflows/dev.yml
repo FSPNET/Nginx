@@ -1,10 +1,13 @@
-name: Docker Build
+name: Edge version Build
 
-on: push
+on: 
+  push:
+    branches:    
+      - dev
 
 jobs:
   publish-to-docker-io:
-    name: Publish to Docker.io
+    name: Publish edge to Docker.io
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
@@ -16,7 +19,7 @@ jobs:
         cache: fspnetwork/nginx
         tags: edge
   publish-to-github-pkg:
-    name: Publish to GitHub Package Registry
+    name: Publish edge to GitHub Package Registry
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
