@@ -1,12 +1,10 @@
 FROM amelia/dhparam:latest as dhparam
 FROM alpine:3.10 as builder
 
-ARG NGINX_VERSION=1.17.5
+ARG NGINX_VERSION=1.17.6
 ARG OPENSSL_VERSION=1.1.1d
 
 RUN set -ex \
-    && echo 'http://mirrors.aliyun.com/alpine/edge/main'>> /etc/apk/repositories \
-    && echo 'http://mirrors.aliyun.com/alpine/edge/community' >> /etc/apk/repositories \
     && apk upgrade \
     && apk add --no-cache \
         gcc \
@@ -146,13 +144,14 @@ COPY --from=builder /usr/lib/nginx/ /usr/lib/nginx/
 COPY --from=builder /usr/share/nginx /usr/share/nginx
 COPY docker-entrypoint.sh /usr/local/bin/
 
-RUN apk add --no-cache \
-        musl \
-        pcre \
-        libssl1.1 \
-        libcrypto1.1 \
-        zlib \
-        libintl \
+RUN set -ex \
+    && runDeps="$( \
+    scanelf --needed --nobanner --format '%n#p' --recursive /usr/ \
+        | tr ',' '\n' \
+        | sort -u \
+        | awk 'system("[ -e /usr/lib/" $1 " ]") == 0 { next } { print "so:" $1 }' \
+    )" \
+    && apk --no-cache add $runDeps \
         tzdata \
         logrotate \
     && sed -i -e 's:/var/log/messages {}:# /var/log/messages {}:' /etc/logrotate.conf \
