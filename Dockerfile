@@ -167,7 +167,7 @@ RUN set -ex \
     && chmod 755 /etc/logrotate.d/domain \
     && chmod +x /usr/local/bin/docker-entrypoint.sh
 
-ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
+ENTRYPOINT ["docker-entrypoint.sh"]
 
 EXPOSE 80 443
 STOPSIGNAL SIGTERM
