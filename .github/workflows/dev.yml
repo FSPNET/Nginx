@@ -28,6 +28,6 @@ jobs:
         username: ${{ secrets.GITHUB_USERNAME }}
         password: ${{ secrets.GITHUB_PR_TOKEN }}
         registry: docker.pkg.github.com
-        repository: fspnet/nginx/nginx
-        cache: fspnet/nginx/nginx
+        repository: docker.pkg.github.com/fspnet/nginx/nginx
+        cache: docker.pkg.github.com/fspnet/nginx/nginx
         tags: edge
