@@ -94,15 +94,15 @@ RUN set -ex && \
         --with-http_secure_link_module \
         --with-http_stub_status_module \
         --with-http_auth_request_module \
-        --with-http_xslt_module=dynamic \
-        --with-http_image_filter_module=dynamic \
-        --with-http_geoip_module=dynamic \
+        --with-http_xslt_module \
+        --with-http_image_filter_module \
+        --with-http_geoip_module \
         --with-threads \
         --with-stream \
         --with-stream_ssl_module \
         --with-stream_ssl_preread_module \
         --with-stream_realip_module \
-        --with-stream_geoip_module=dynamic \
+        --with-stream_geoip_module \
         --with-http_slice_module \
         --with-mail \
         --with-mail_ssl_module \
@@ -111,10 +111,10 @@ RUN set -ex && \
         --with-http_v2_module \
         --with-http_v2_hpack_enc \
         --with-zlib=/usr/src/nginx-${NGINX_VERSION}/zlib \
-        --add-dynamic-module=/usr/src/nginx-${NGINX_VERSION}/ngx_brotli \
-        --add-dynamic-module=/usr/src/nginx-${NGINX_VERSION}/nginx-sticky-module-ng \
-        --add-dynamic-module=/usr/src/nginx-$NGINX_VERSION/nginx-ct \
-        --add-dynamic-module=/usr/src/nginx-${NGINX_VERSION}/headers-more-nginx-module \
+        --add-module=/usr/src/nginx-${NGINX_VERSION}/ngx_brotli \
+        --add-module=/usr/src/nginx-${NGINX_VERSION}/nginx-sticky-module-ng \
+        --add-module=/usr/src/nginx-$NGINX_VERSION/nginx-ct \
+        --add-module=/usr/src/nginx-${NGINX_VERSION}/headers-more-nginx-module \
         --with-openssl=/usr/src/nginx-${NGINX_VERSION}/openssl-${OPENSSL_VERSION} \
     && make -j$(getconf _NPROCESSORS_ONLN) \
     && make install \
@@ -125,7 +125,6 @@ RUN set -ex && \
     && install -m644 html/50x.html /usr/share/nginx/html/ \
     && ln -s ../../usr/lib/nginx/modules /etc/nginx/modules \
     && strip /usr/sbin/nginx* \
-    && strip /usr/lib/nginx/modules/*.so \
     && nginx -V
 
 COPY --from=dhparam /dhparam.pem /etc/nginx/ssl/dhparam.pem
@@ -140,7 +139,6 @@ ENV TZ=UTC
 COPY --from=builder /etc/nginx /etc/nginx
 COPY --from=builder /usr/sbin/nginx /usr/sbin/nginx
 COPY --from=builder /usr/bin/envsubst /usr/local/bin/envsubst
-COPY --from=builder /usr/lib/nginx/ /usr/lib/nginx/
 COPY --from=builder /usr/share/nginx /usr/share/nginx
 COPY docker-entrypoint.sh /usr/local/bin/
 
