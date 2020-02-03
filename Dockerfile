@@ -1,5 +1,5 @@
 FROM amelia/dhparam:latest as dhparam
-FROM alpine:3.10 as builder
+FROM alpine:3.11 as builder
 
 ARG NGINX_VERSION=1.17.7
 ARG OPENSSL_VERSION=1.1.1d
@@ -132,7 +132,7 @@ COPY conf/ /etc/nginx/
 COPY ua/* /etc/nginx/ua/
 
 
-FROM alpine:3.10
+FROM alpine:3.11
 
 ENV TZ=UTC
 
