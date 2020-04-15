@@ -1,8 +1,8 @@
 FROM amelia/dhparam:latest as dhparam
 FROM alpine:3.11 as builder
 
-ARG OPENSSL_VERSION=1.1.1d
 ARG NGINX_VERSION=1.17.10
+ARG OPENSSL_VERSION=1.1.1e
 
 RUN set -ex \
     && apk upgrade \
