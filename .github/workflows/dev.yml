@@ -3,7 +3,7 @@ name: Edge version Build
 on: 
   push:
     branches:    
-      - dev
+      - next
 
 jobs:
   publish-to-docker-io:
