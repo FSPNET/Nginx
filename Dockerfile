@@ -50,8 +50,7 @@ RUN git clone https://github.com/cloudflare/zlib.git --depth 1 && \
 
 # OpenSSL
 RUN curl -fSL https://www.openssl.org/source/openssl-${OPENSSL_VERSION}.tar.gz -o openssl-${OPENSSL_VERSION}.tar.gz && \
-    tar -xzf openssl-${OPENSSL_VERSION}.tar.gz && \
-    (cd openssl-${OPENSSL_VERSION}; curl https://raw.githubusercontent.com/hakasenyang/openssl-patch/master/openssl-equal-${OPENSSL_VERSION}_ciphers.patch | patch -p1)
+    tar -xzf openssl-${OPENSSL_VERSION}.tar.gz
 
 # Sticky
 RUN mkdir nginx-sticky-module-ng && \
