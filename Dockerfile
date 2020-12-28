@@ -21,6 +21,7 @@ RUN set -ex \
         geoip-dev \
         git \
         gettext \
+        patch \
     && curl -fSL https://nginx.org/download/nginx-$NGINX_VERSION.tar.gz -o nginx.tar.gz \
     && curl -fSL https://nginx.org/download/nginx-$NGINX_VERSION.tar.gz.asc -o nginx.tar.gz.asc \
     && export GNUPGHOME="$(mktemp -d)"; \
