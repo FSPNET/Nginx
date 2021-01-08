@@ -10,39 +10,39 @@ jobs:
     name: Publish to Docker.io
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - uses: jerray/publish-docker-action@master
-      with:
-        username: ${{ secrets.DOCKER_USERNAME }}
-        password: ${{ secrets.DOCKER_TOKEN }}
-        repository: fspnetwork/nginx
-        cache: fspnetwork/nginx
-        auto_tag: true
-    - uses: jerray/publish-docker-action@master
-      with:
-        username: ${{ secrets.DOCKER_USERNAME }}
-        password: ${{ secrets.DOCKER_TOKEN }}
-        repository: fspnetwork/nginx
-        cache: fspnetwork/nginx
-        tags: latest
+      - uses: actions/checkout@v2
+      - uses: jerray/publish-docker-action@master
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_TOKEN }}
+          repository: fspnetwork/nginx
+          cache: fspnetwork/nginx
+          auto_tag: true
+      - uses: jerray/publish-docker-action@master
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_TOKEN }}
+          repository: fspnetwork/nginx
+          cache: fspnetwork/nginx
+          tags: latest
   publish-to-github-pkg:
     name: Publish to GitHub Package Registry
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - uses: jerray/publish-docker-action@master
-      with:
-        username: ${{ secrets.GITHUB_USERNAME }}
-        password: ${{ secrets.GITHUB_PR_TOKEN }}
-        registry: docker.pkg.github.com
-        repository: fspnet/nginx/nginx
-        cache: fspnet/nginx/nginx
-        auto_tag: true
-    - uses: jerray/publish-docker-action@master
-      with:
-        username: ${{ secrets.GITHUB_USERNAME }}
-        password: ${{ secrets.GITHUB_PR_TOKEN }}
-        registry: docker.pkg.github.com
-        repository: fspnet/nginx/nginx
-        cache: fspnet/nginx/nginx
-        tags: latest
+      - uses: actions/checkout@v2
+      - uses: jerray/publish-docker-action@master
+        with:
+          username: ${{ secrets.GITHUB_USERNAME }}
+          password: ${{ secrets.GITHUB_PR_TOKEN }}
+          registry: docker.pkg.github.com
+          repository: fspnet/nginx/nginx
+          cache: fspnet/nginx/nginx
+          auto_tag: true
+      - uses: jerray/publish-docker-action@master
+        with:
+          username: ${{ secrets.GITHUB_USERNAME }}
+          password: ${{ secrets.GITHUB_PR_TOKEN }}
+          registry: docker.pkg.github.com
+          repository: fspnet/nginx/nginx
+          cache: fspnet/nginx/nginx
+          tags: latest
