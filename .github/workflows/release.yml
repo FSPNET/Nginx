@@ -1,8 +1,9 @@
 name: Docker Build
 
 on:
-  release:
-    types: [published]
+  push:
+    tags:
+      - '1*' # Push events to matching v*, i.e. 1.0, 20.15.10
 
 jobs:
   publish-to-docker-io:
