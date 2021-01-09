@@ -37,8 +37,7 @@ RUN set -ex \
 
 WORKDIR /usr/src/nginx-$NGINX_VERSION
 
-RUN curl https://raw.githubusercontent.com/kn007/patch/master/nginx.patch | patch -p1 && \
-    curl https://raw.githubusercontent.com/hakasenyang/openssl-patch/master/nginx_strict-sni_1.15.10.patch | patch -p1
+RUN curl https://raw.githubusercontent.com/kn007/patch/master/nginx.patch | patch -p1
 
 # brotli
 RUN git clone https://github.com/google/ngx_brotli.git --depth=1 && \
