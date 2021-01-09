@@ -42,24 +42,3 @@ jobs:
           repository: fspnetwork/nginx
           cache: fspnetwork/nginx
           tags: latest
-  publish-to-github-pkg:
-    name: Publish to GitHub Package Registry
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: jerray/publish-docker-action@master
-        with:
-          username: ${{ secrets.GITHUB_USERNAME }}
-          password: ${{ secrets.GITHUB_PR_TOKEN }}
-          registry: docker.pkg.github.com
-          repository: fspnet/nginx/nginx
-          cache: fspnet/nginx/nginx
-          auto_tag: true
-      - uses: jerray/publish-docker-action@master
-        with:
-          username: ${{ secrets.GITHUB_USERNAME }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-          registry: ghcr.io
-          repository: fspnet/nginx/nginx
-          cache: fspnet/nginx/nginx
-          tags: latest

@@ -18,16 +18,3 @@ jobs:
         repository: fspnetwork/nginx
         cache: fspnetwork/nginx
         tags: edge
-  publish-to-github-pkg:
-    name: Publish edge to GitHub Package Registry
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-    - uses: jerray/publish-docker-action@master
-      with:
-        username: ${{ secrets.GITHUB_USERNAME }}
-        password: ${{ secrets.GITHUB_PR_TOKEN }}
-        registry: docker.pkg.github.com
-        repository: docker.pkg.github.com/fspnet/nginx/nginx
-        cache: docker.pkg.github.com/fspnet/nginx/nginx
-        tags: edge
