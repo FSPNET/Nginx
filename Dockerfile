@@ -1,7 +1,7 @@
 FROM amelia/dhparam:latest as dhparam
 FROM alpine:3.12 as builder
 
-ARG NGINX_VERSION=1.19.6
+ARG NGINX_VERSION=1.19.10
 ARG OPENSSL_VERSION=1.1.1i
 
 RUN set -ex \
