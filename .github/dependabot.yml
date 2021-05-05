@@ -1,0 +1,13 @@
+version: 2
+updates:
+- package-ecosystem: docker
+  directory: "/"
+  schedule:
+    interval: daily
+    time: "11:00"
+  open-pull-requests-limit: 10
+  target-branch: next
+  reviewers:
+  - Teakowa
+  labels:
+  - "\U0001F4E6 Type/Dependencies"
